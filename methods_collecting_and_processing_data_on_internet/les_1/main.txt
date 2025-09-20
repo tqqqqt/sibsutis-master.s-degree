@@ -1,0 +1,7 @@
+#1
+curl https://api.github.com/users/tqqqqt/repos -o result.json
+
+#2
+curl https://api.openweathermap.org/data/2.5/weather?q=Moscow&appid=[api_key]&units=metric
+or
+python3 main.py
