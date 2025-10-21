@@ -57,19 +57,22 @@ struct Matrix{
 		coef=1;
 	}
 
-	void printBracket() const{
+	void printBracket(bool full_flg) const{
 		std::string state="";
-		int temp=0;
-		std::cout<<"|f>=";
+		int temp=0, count=0;
+		if(full_flg==true) std::cout<<"|f>=";
 		for(int i=0;i<rows;++i){
+			if(full_flg==false && data[i][0]==0) continue;
+
 			state="";
 			temp=i;
 			while(temp>0 || state.length()<(rows/2)){
 				state=(char)('0'+(temp&1))+state;
 				temp=temp>>1;
 			}
-			if(i!=0) std::cout<<'+';
+			if(count!=0) std::cout<<'+';
 			std::cout<<data[i][0]<<'|'<<state<<'>';
+			count+=1;
 		}
 		std::cout<<'\n';
 	}
@@ -121,8 +124,8 @@ struct Matrix{
 		res.coef=a.coef*b.coef;
 		if(res.coef==0) res.coef=1;
 		TYPE temp=0;
-		for(int i=0;i<a.columns;++i){
-			for(int j=0;j<b.rows;++j){
+		for(int i=0;i<res.rows;++i){
+			for(int j=0;j<res.columns;++j){
 				temp=0;
 				for(int k=0;k<a.columns;++k) temp+=a.data[i][k]*b.data[k][j];
 				res.data[i][j]=temp;
@@ -240,7 +243,7 @@ int main(){
 
 		std::cout<<"\nVector in bracket notation:\n";
 		m2.print();
-		m2.printBracket();
+		m2.printBracket(true);
 
 		std::cout<<"\nBracket in vector:\n";
 		m1=Matrix::inputBracketValues();
@@ -260,7 +263,13 @@ int main(){
 		h.data={{1,1},{1,-1}};
 		h.print();
 		m1=Matrix::mull(h,m1);
+		m1.print();
+		std::cout<<"\nWithout coef:\n";
+		randomQubit(m1.data);
+		randomQubit(m1.data);
+		randomQubit(m1.data);
 		m1.mullCoefData();
+		std::cout<<"\nWith coef:\n";
 		m1.print();
 		randomQubit(m1.data);
 		randomQubit(m1.data);
