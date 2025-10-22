@@ -6,12 +6,12 @@
 #include <ctime>
 
 
-#define TYPE_FLO
+#define TYPE_DBL
 // #define TYPE_INT
 
 
-#if defined(TYPE_FLO)
-	#define TYPE float
+#if defined(TYPE_DBL)
+	#define TYPE double
 #else
 	#define TYPE int
 #endif
@@ -59,14 +59,22 @@ struct Matrix{
 
 	void printBracket(bool full_flg) const{
 		std::string state="";
-		int temp=0, count=0;
+		int temp=2, count=0, state_size=1, br_coef=0;
+		while(temp<rows){
+			state_size+=1;
+			temp*=2;
+		}
 		if(full_flg==true) std::cout<<"|f>=";
+		if(coef!=1){
+			br_coef=1;
+			std::cout<<coef<<'(';
+		}
 		for(int i=0;i<rows;++i){
-			if(full_flg==false && data[i][0]==0) continue;
+			if(data[i][0]==0) continue;
 
 			state="";
 			temp=i;
-			while(temp>0 || state.length()<(rows/2)){
+			while(temp>0 || state.length()<state_size){
 				state=(char)('0'+(temp&1))+state;
 				temp=temp>>1;
 			}
@@ -74,6 +82,7 @@ struct Matrix{
 			std::cout<<data[i][0]<<'|'<<state<<'>';
 			count+=1;
 		}
+		if(br_coef!=0) std::cout<<')';
 		std::cout<<'\n';
 	}
 
@@ -135,16 +144,16 @@ struct Matrix{
 	}
 
 	static Matrix tensorMull(Matrix a, Matrix b){
-		if(a.columns!=b.columns || a.rows!=b.rows) throw "Incorect matrix in tensor";
-
 		Matrix res(1,1);
 		if(a.columns==1 && b.columns==1) res=Matrix(a.rows*b.rows);
-		else res=Matrix(a.rows*b.rows,a.columns*b.columns);
+		else if(a.columns!=1 && b.columns!=1) res=Matrix(a.rows*b.rows,a.columns*b.columns);
+		else throw "Incorect matrix or vector in tensor";
+
 		res.coef=a.coef*b.coef;
 		if(res.coef==0) res.coef=1;
 		for(int i=0;i<res.rows;++i){
 			for(int j=0;j<res.columns;++j){
-				res.data[i][j]=b.data[i%b.rows][j%b.columns]*a.data[i/a.rows][j/a.columns];
+				res.data[i][j]=a.data[i/b.rows][j/b.columns]*b.data[i%b.rows][j%b.columns];
 			}
 		}
 		return res;
