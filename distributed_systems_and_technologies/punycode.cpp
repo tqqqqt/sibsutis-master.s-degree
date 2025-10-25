@@ -51,8 +51,11 @@ int calculateBias(int _delta){
 
 
 int main(){
-	char32_t *input_string=U"уpаcнeг";
-	int input_string_size=7;
+	// --------------------------------------------------------
+	char32_t *input_string=U"ууpааcннeгг";
+	int input_string_size=11;
+	// --------------------------------------------------------
+
 	std::cout<<"Input str: ";
 	for(int i=0;i<input_string_size;i++) std::cout<<(char)input_string[i];
 	std::cout<<'\n';
@@ -80,17 +83,20 @@ int main(){
 	int temp_size=symbols.size(), temp_save_value=0;
 	std::vector<int> t, w;
 	int dist_symbol=0, dist_end=0, count_pass=0, code_dist=0, t_size=0, sizz=curent_str.size();
-	turn=temp_size;
+	turn=sizz+1;
 	for(int i=0;i<temp_size;++i, ++turn){
 		// symbol in 10 system
 		std::cout<<"\nSymb="<<input_string[symbols[i]]<<'\n';
+		std::cout<<"Curent str: ";
+		for(int i=0;i<sizz;++i) std::cout<<(char)curent_str[i];
+		std::cout<<'\n';
 
 		dist_symbol=(int)input_string[symbols[i]]-(int)n;
 		if(n==0x80) dist_end=0;
 		else{
 			// try find distance to end
 			int pos=0;
-			for(int j=0;j<sizz;++j){
+			for(int j=sizz-1;j>=0;--j){
 				if(curent_str[j]!=n) continue;
 				pos=j;
 				break;
